@@ -42,18 +42,16 @@ public class QnaService {
         return questionRepository.findOne(id);
     }
 
+    @Transactional
     public Question update(User loginUser, long id, Question updatedQuestion) {
         Question question = questionRepository.findOne(id);
-        return questionRepository.save(question.update(loginUser,updatedQuestion.getTitle(), updatedQuestion.getContents()));
+        return question.update(loginUser, updatedQuestion);
     }
 
     @Transactional
     public void deleteQuestion(User loginUser, long questionId) throws CannotDeleteException {
         Question question = questionRepository.findOne(questionId);
-        if (!question.isOwner(loginUser)) {
-          throw new UnAuthorizedException();
-        }
-        questionRepository.delete(questionId);
+        question.delete(loginUser);
     }
 
     public Iterable<Question> findAll() {
