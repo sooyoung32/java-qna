@@ -102,11 +102,15 @@ public class Question extends AbstractEntity implements UrlGeneratable {
     }
 
     public QuestionDto toQuestionDto() {
-        return new QuestionDto(getId(), this.title, this.contents);
+        return new QuestionDto(getId(), this.title, this.contents, this.deleted);
     }
 
     @Override
     public String toString() {
         return "Question [id=" + getId() + ", title=" + title + ", contents=" + contents + ", writer=" + writer + "]";
+    }
+
+    public Answer getAnswer(long answerId) {
+        return this.answers.stream().filter(answer -> answer.getId() == answerId).findFirst().orElse(null);
     }
 }
