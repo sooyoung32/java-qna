@@ -6,6 +6,7 @@ import codesquad.domain.User;
 import codesquad.dto.QuestionDto;
 import codesquad.security.LoginUser;
 import codesquad.service.QnaService;
+import codesquad.util.UriCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -33,7 +33,7 @@ public class ApiQuestionController {
     public ResponseEntity<Void> create(@Valid @RequestBody QuestionDto questionDto, @LoginUser User loginUser) {
         Question question = qnaService.create(loginUser, new Question(questionDto.getTitle(), questionDto.getContents()));
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/api/" + question.generateUrl()));
+        headers.setLocation(UriCreator.createUri(question));
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
@@ -54,8 +54,7 @@ public class ApiQuestionController {
             , @LoginUser User loginUser) throws CannotDeleteException {
         qnaService.deleteQuestion(loginUser, id);
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/api"));
+        headers.setLocation(UriCreator.createUri(new Question()));
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
-
 }

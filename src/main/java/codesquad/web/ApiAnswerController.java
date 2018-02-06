@@ -6,6 +6,7 @@ import codesquad.domain.User;
 import codesquad.dto.AnswerDto;
 import codesquad.security.LoginUser;
 import codesquad.service.QnaService;
+import codesquad.util.UriCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class ApiAnswerController {
         Answer answer = qnaService.addAnswer(loginUser, questionId, answerDto.getContents());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/api/" + answer.generateUrl()));
+        headers.setLocation(UriCreator.createUri(answer));
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
