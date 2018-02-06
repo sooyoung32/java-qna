@@ -33,7 +33,7 @@ public class ApiQuestionController {
     public ResponseEntity<Void> create(@Valid @RequestBody QuestionDto questionDto, @LoginUser User loginUser) {
         Question question = qnaService.create(loginUser, new Question(questionDto.getTitle(), questionDto.getContents()));
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/api/questions/" + question.getId()));
+        headers.setLocation(URI.create("/api/" + question.generateUrl()));
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
@@ -54,7 +54,7 @@ public class ApiQuestionController {
             , @LoginUser User loginUser) throws CannotDeleteException {
         qnaService.deleteQuestion(loginUser, id);
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/api/questions/"));
+        headers.setLocation(URI.create("/api"));
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 

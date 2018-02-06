@@ -70,9 +70,7 @@ public class QnaService {
         if (question == null) {
             throw new IllegalArgumentException(questionId + "가 존재하지 않습니다.");
         }
-        Answer answer = answerRepository.save(new Answer(loginUser, contents));
-        question.addAnswer(answer);
-        return answer;
+        return question.addAnswer(new Answer(loginUser,contents));
     }
 
     @Transactional
