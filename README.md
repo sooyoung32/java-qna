@@ -21,3 +21,4 @@
 힌트
 * codesquad.web.UserAcceptanceTest 소스 코드를 참고해 LoginAcceptanceTest를 구현하면서 시작한다.
 * codesquad.web.UserAcceptanceTest 소스 코드의 create() 테스트 메소드를 참고해 서버에 데이터를 전송한다.
+

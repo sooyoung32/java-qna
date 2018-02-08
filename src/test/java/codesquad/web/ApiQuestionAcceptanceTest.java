@@ -1,5 +1,8 @@
 package codesquad.web;
 
+import codesquad.domain.Answer;
+import codesquad.domain.User;
+import codesquad.dto.AnswerDto;
 import codesquad.dto.QuestionDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,15 +51,43 @@ public class ApiQuestionAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    public void delete() {
+    public void delete_질문한_사람과_로그인한_사람이_같으면서_답변이_없는_경우() {
         String resource = createResource(QUESTION_PATH, question);
-
         basicAuthTemplate(defaultUser()).delete(resource, String.class);
         assertThat(getResource(resource, QuestionDto.class, defaultUser()).isDeleted()).isTrue();
     }
 
     @Test
-    public void delete_권한없음() {
+    public void delete_질문이_존재하지_않는_경우() {
+        String resource = createResource(QUESTION_PATH, question);
+        basicAuthTemplate(defaultUser()).delete(QUESTION_PATH+"/2", String.class);
+        assertThat(getResource(resource, QuestionDto.class, defaultUser()).isDeleted()).isFalse();
+    }
+
+    @Test
+    public void delete_질문한_사람과_로그인한_사람이_같으면서_답변의_글쓴이도_같은_경우() {
+        String resource = createResource(QUESTION_PATH, question);
+        addAnswer(resource, defaultUser());
+        addAnswer(resource, defaultUser());
+        basicAuthTemplate(defaultUser()).delete(resource, String.class);
+        assertThat(getResource(resource, QuestionDto.class, defaultUser()).isDeleted()).isTrue();
+    }
+
+    @Test
+    public void delete_질문한_사람과_로그인한_사람이_같으면서_답변의_글쓴이가_다른_경우() {
+        String resource = createResource(QUESTION_PATH, question);
+        addAnswer(resource, findByUserId("sanjigi"));
+        addAnswer(resource, defaultUser());
+        basicAuthTemplate(defaultUser()).delete(resource, String.class);
+        assertThat(getResource(resource, QuestionDto.class, defaultUser()).isDeleted()).isFalse();
+    }
+
+    private ResponseEntity<String> addAnswer(String resource, User user) {
+        return basicAuthTemplate(user).postForEntity(resource+"/answers", new AnswerDto("answers"), String.class);
+    }
+
+    @Test
+    public void delete_질문한_사람과_로그인한_사람이_다른_경우() {
         String resource = createResource(QUESTION_PATH, question);
 
         basicAuthTemplate(findByUserId("sanjigi")).delete(resource, String.class);
